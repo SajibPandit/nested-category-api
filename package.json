@@ -1,0 +1,18 @@
+{
+  "name": "backend-for-category",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Sajib Pandit",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.14",
+    "slugify": "^1.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
