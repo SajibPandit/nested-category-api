@@ -1,17 +1,36 @@
 const Category = require("../models/Category");
 const slugify = require("slugify");
 
-exports.getAllCategory = async (req, res, next) => {
-  try {
-    const categories = await Category.find({});
-    if (categories) {
-      return res.status(200).json(categories);
-    } else {
-      return res.status(404).json({ error: "Error Occured!" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+const createFormattedCategory = (categories, parentId = null) => {
+  const categoryList = [];
+  let category;
+  if (parentId == null) {
+    category = categories.filter((cat) => cat.parentId == undefined);
+  } else {
+    category = categories.filter((cat) => cat.parentId == parentId);
   }
+  for (cate of category) {
+    categoryList.push({
+      _id: cate._id,
+      name: cate.name,
+      slug: cate.slug,
+      children: createFormattedCategory(categories, cate._id),
+    });
+  }
+
+  return categoryList;
+};
+
+exports.getAllCategory = (req, res) => {
+  Category.find({}).exec((error, categories) => {
+    if (error) {
+      res.status(400).json({ error: error.message });
+    }
+    if (categories) {
+      const categoryList = createFormattedCategory(categories);
+      return res.status(200).json(categoryList);
+    }
+  });
 };
 
 exports.createCategory = async (req, res, next) => {
