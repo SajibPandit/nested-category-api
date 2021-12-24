@@ -91,15 +91,91 @@ const deleteSubCategory = async (category) => {
   return await Category.findByIdAndDelete({ _id: category._id });
 };
 
+const getParentCategories = async (parentId, parentCategories = null) => {
+  const category = await Category.find({ id: parentId });
+  if (category) {
+    parentCategories = [category[0], ...parentCategories];
+    if (category.parentId) {
+      getParentCategories(category.parentId, parentCategories);
+    }
+  }
+  console.log(parentCategories);
+  return parentCategories;
+};
+
+const getChildCategories = async (id) => {
+  try {
+    const cat = await Category.find({ parentId: id }).then((categories) => {
+      if (categories) {
+        console.log(categories);
+        return categories;
+      }
+    });
+  } catch (error) {}
+};
+
 exports.getSingleCategory = async (req, res, next) => {
   try {
-    const category = await Category.findOne({ _id: req.params.id });
-    if (category) {
-      return res.status(200).json(category);
-    } else {
-      return res.status(404).json({ error: "No category found" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    Category.findById(req.params.id)
+      .then((category) => {
+        if (!category) {
+          return res.status(404).json({ message: "Category not found" });
+        } else {
+          let formattedCategory = {
+            id: category.id,
+            name: category.name,
+            slug: category.slug,
+            parentId: category.parentId,
+          };
+          formattedCategory.childrens = getChildCategories(category.id);
+          let parentCategories = [];
+          formattedCategory.parents = getParentCategories(
+            category.parentId,
+            parentCategories
+          );
+
+          return res.status(200).json(formattedCategory);
+        }
+      })
+      .catch((err) => {
+        return res.status(404).json(err.message);
+      });
+  } catch (error) {}
 };
+
+// exports.getSingleCategory = async (req, res, next) => {
+//   try {
+//     const category = await Category.findById(req.params.id);
+
+//     if (category) {
+//       let categoryList = [];
+//       const childrens = getChildCategories(category.id);
+//       console.log(childrens);
+//       categoryList.push({
+//         id: category._id,
+//         name: category.name,
+//         slug: category.slug,
+//         parentId: category.parentId,
+//         // parents: getParentCategories(category),
+//         // childrens: getChildCategories(category.id),
+//       });
+//       // const childCategories = await Category.find({
+//       //   parentId: category.parentId,
+//       // });
+//       // let parentCategories = [];
+//       // if (category.parentId != null) {
+//       //   parentCategories = await getParentCategories(
+//       //     category.parentId,
+//       //     parentCategories
+//       //   );
+//       // }
+//       // console.log(parentCategories, childCategories);
+
+//       return res.status(200).json(categoryList);
+//     } else {
+//       return res.status(404).json({ error: "No category found" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
