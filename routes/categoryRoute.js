@@ -1,12 +1,13 @@
 const router = require("express").Router();
 const {
-  getAllCategory,
   createCategory,
   deleteCategory,
-  getSingleCategory
+  getSingleCategory,
+  getAllRootCategories,
 } = require("../controllers/category");
 
-router.route("/").get(getAllCategory).post(createCategory);
+router.route("/").get(getAllRootCategories).post(createCategory);
 router.route("/:id").get(getSingleCategory).delete(deleteCategory);
+router.get("/root", getAllRootCategories);
 
 module.exports = router;

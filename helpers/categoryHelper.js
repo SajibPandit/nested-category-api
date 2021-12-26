@@ -30,7 +30,7 @@ const getChildCategories = (id, categories, childs) => {
   return childs;
 };
 
-const getFormattedSingleCategory = (id, categories) => {
+const getFormattedSingleCategory = (id, categories, res) => {
   const categoryList = [];
   const parents = [];
   const childs = [];
@@ -42,31 +42,32 @@ const getFormattedSingleCategory = (id, categories) => {
       slug: cate.slug,
       parentId: cate.parentId,
       childrens: getChildCategories(cate.id, categories, childs),
-      parents: getParentCategories(cate.parentId, categories, parents),
-    });
-  }
-  return categoryList;
-};
-
-const createFormattedCategory = (categories, parentId = null) => {
-  const categoryList = [];
-  let category;
-  if (parentId == null) {
-    category = categories.filter((cat) => cat.parentId == undefined);
-  } else {
-    category = categories.filter((cat) => cat.parentId == parentId);
-  }
-  for (cate of category) {
-    categoryList.push({
-      _id: cate._id,
-      name: cate.name,
-      slug: cate.slug,
-      children: createFormattedCategory(categories, cate._id),
+      url: getParentCategories(cate.parentId, categories, parents),
     });
   }
 
   return categoryList;
 };
+
+// const createFormattedCategory = (categories, parentId = null) => {
+//   const categoryList = [];
+//   let category;
+//   if (parentId == null) {
+//     category = categories.filter((cat) => cat.parentId == undefined);
+//   } else {
+//     category = categories.filter((cat) => cat.parentId == parentId);
+//   }
+//   for (cate of category) {
+//     categoryList.push({
+//       _id: cate._id,
+//       name: cate.name,
+//       slug: cate.slug,
+//       children: createFormattedCategory(categories, cate._id),
+//     });
+//   }
+
+//   return categoryList;
+// };
 
 const deleteSubCategory = async (category) => {
   Category.find({ parentId: category._id }).then((cat) => {
@@ -78,7 +79,7 @@ const deleteSubCategory = async (category) => {
 };
 
 module.exports = {
-  createFormattedCategory,
+  // createFormattedCategory,
   deleteSubCategory,
-  getFormattedSingleCategory
-}
+  getFormattedSingleCategory,
+};

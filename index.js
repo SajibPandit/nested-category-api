@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require('cors')
+const cors = require("cors");
 
 const categoryRoutes = require("./routes/categoryRoute");
 
@@ -16,7 +16,9 @@ app.get("/", (req, res) => {
 });
 
 mongoose
-  .connect("mongodb://localhost:27017/category-api-1")
+  .connect(
+    "mongodb+srv://sajib:pandit@category.os1bl.mongodb.net/category-api?retryWrites=true&w=majority"
+  )
   .then(() => {
     console.log("Database connection established");
     app.listen(5000, (res) => console.log("Server Started"));
