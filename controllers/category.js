@@ -3,6 +3,7 @@ const slugify = require("slugify");
 const {
   getFormattedSingleCategory,
   // createFormattedCategory,
+  getChildCategories,
   deleteSubCategory,
 } = require("../helpers/categoryHelper");
 
@@ -22,16 +23,18 @@ const {
 // };
 
 exports.allCategories = (req, res, next) => {
-  Category.find({}).then((category) => {
-    if (!category) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No category found" });
-    }
-    res.json({ success: true, total: category.length, data: category });
-  }).catch((err)=>{
-    res.status(400).json({ success: false, message: err.message})
-  })
+  Category.find({})
+    .then((category) => {
+      if (!category) {
+        return res
+          .status(404)
+          .json({ success: false, message: "No category found" });
+      }
+      res.json({ success: true, total: category.length, data: category });
+    })
+    .catch((err) => {
+      res.status(400).json({ success: false, message: err.message });
+    });
 };
 
 exports.getAllRootCategories = (req, res, next) => {
@@ -44,11 +47,24 @@ exports.getAllRootCategories = (req, res, next) => {
             .status(404)
             .json({ success: false, message: "No root category found" });
         }
-        
+        let formattedCat = [];
+        let childs = [];
+        if (roots) {
+          for (root of roots) {
+            formattedCat.push({
+              _id: root.id,
+              name: root.name,
+              slug: root.slug,
+              createdAt: root.createdAt,
+              childrens: getChildCategories(root.id, category, childs=[]),
+            });
+          }
+        }
+
         res.json({
           success: true,
-          total: roots.length,
-          data: roots,
+          total: formattedCat.length,
+          data: formattedCat,
         });
       }
     });

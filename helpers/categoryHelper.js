@@ -80,5 +80,6 @@ const deleteSubCategory = async (category) => {
 module.exports = {
   // createFormattedCategory,
   deleteSubCategory,
+  getChildCategories,
   getFormattedSingleCategory,
 };
