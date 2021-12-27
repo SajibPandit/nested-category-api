@@ -1,11 +1,10 @@
 const Category = require("../models/Category");
 
 const getParentCategories = (id, categories, parents) => {
-  console.log(id);
   const category = categories.filter((c) => c.id === id);
   for (cate of category) {
     parents.unshift({
-      id: cate._id,
+      _id: cate._id,
       name: cate.name,
       slug: cate.slug,
       parentId: cate.parentId,
@@ -21,7 +20,7 @@ const getChildCategories = (id, categories, childs) => {
   const childCategory = categories.filter((c) => c.parentId === id);
   for (cate of childCategory) {
     childs.push({
-      id: cate.id,
+      _id: cate.id,
       name: cate.name,
       slug: cate.slug,
       parentId: cate.parentId,
@@ -37,7 +36,7 @@ const getFormattedSingleCategory = (id, categories, res) => {
   let category = categories.filter((c) => c.id === id);
   for (cate of category) {
     categoryList.push({
-      id: cate.id,
+      _id: cate.id,
       name: cate.name,
       slug: cate.slug,
       parentId: cate.parentId,

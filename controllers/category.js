@@ -44,6 +44,7 @@ exports.getAllRootCategories = (req, res, next) => {
             .status(404)
             .json({ success: false, message: "No root category found" });
         }
+        
         res.json({
           success: true,
           total: roots.length,
