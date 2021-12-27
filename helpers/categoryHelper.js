@@ -18,12 +18,14 @@ const getParentCategories = (id, categories, parents) => {
 
 const getChildCategories = (id, categories, childs) => {
   const childCategory = categories.filter((c) => c.parentId === id);
+  let child2 = [];
   for (cate of childCategory) {
     childs.push({
       _id: cate.id,
       name: cate.name,
       slug: cate.slug,
       parentId: cate.parentId,
+      childrens: getChildCategories(cate.id, categories, child2),
     });
   }
   return childs;
