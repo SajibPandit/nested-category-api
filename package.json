@@ -5,7 +5,7 @@
   "author": "Sajib Pandit",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
