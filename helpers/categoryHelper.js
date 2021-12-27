@@ -30,19 +30,18 @@ const getChildCategories = (id, categories, childs) => {
 };
 
 const getFormattedSingleCategory = (id, categories, res) => {
-  const categoryList = [];
+  const categoryList = {};
   const parents = [];
   const childs = [];
   let category = categories.filter((c) => c.id === id);
   for (cate of category) {
-    categoryList.push({
-      _id: cate.id,
-      name: cate.name,
-      slug: cate.slug,
-      parentId: cate.parentId,
-      childrens: getChildCategories(cate.id, categories, childs),
-      url: getParentCategories(cate.parentId, categories, parents),
-    });
+    categoryList._id = cate.id;
+    categoryList.name = cate.name;
+    categoryList.slug = cate.slug;
+    categoryList.createdAt = cate.createdAt;
+    categoryList.parentId = cate.parentId;
+    categoryList.childrens = getChildCategories(cate.id, categories, childs);
+    categoryList.url = getParentCategories(cate.parentId, categories, parents);
   }
 
   return categoryList;
