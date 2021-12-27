@@ -21,6 +21,19 @@ const {
 //   });
 // };
 
+exports.allCategories = (req, res, next) => {
+  Category.find({}).then((category) => {
+    if (!category) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No category found" });
+    }
+    res.json({ success: true, total: category.length, data: category });
+  }).catch((err)=>{
+    res.status(400).json({ success: false, message: err.message})
+  })
+};
+
 exports.getAllRootCategories = (req, res, next) => {
   try {
     Category.find({}).then((category) => {
